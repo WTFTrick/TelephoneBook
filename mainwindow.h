@@ -5,6 +5,10 @@
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QVariant>
+
 
 #include <stdio.h>
 
@@ -33,6 +37,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     void CreatorConnections();
+    void InterfaceSettings();
 };
 
 #endif // MAINWINDOW_H
