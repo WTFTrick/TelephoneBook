@@ -29,6 +29,7 @@ public:
 
 private slots:
     void QVariantToJson();
+    void ClearAll();
 
 private:
     Ui::MainWindow *ui;

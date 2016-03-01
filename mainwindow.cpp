@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    close();
 }
 
 void MainWindow::QVariantToJson()
@@ -66,7 +67,7 @@ void MainWindow::QVariantToJson()
         document.setObject(object);
 
         QFile jsonFile("/home/kopylov/tb.json");
-        jsonFile.open(QFile::WriteOnly);
+        jsonFile.open(QFile::Append);
         jsonFile.write(document.toJson());
         jsonFile.close();
 
@@ -79,9 +80,21 @@ void MainWindow::QVariantToJson()
     }
 }
 
+void MainWindow::ClearAll()
+{
+    ui->listWidget->clear();
+    QFile file("/home/kopylov/tb.json");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
+       file.write("");
+    }
+    file.close();
+}
+
 void MainWindow::CreatorConnections()
 {
     connect(ui->pb_toJSON, SIGNAL(clicked(bool)), this, SLOT(QVariantToJson()));
+    connect(ui->pb_clear, SIGNAL(clicked(bool)), this, SLOT(ClearAll()));
 }
 
 void MainWindow::InterfaceSettings()

@@ -30,6 +30,9 @@
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="name_lineEdit"/>
+     </item>
      <item row="0" column="1">
       <widget class="QLabel" name="label_telephone">
        <property name="sizePolicy">
@@ -43,6 +46,9 @@
        </property>
       </widget>
      </item>
+     <item row="11" column="1">
+      <widget class="QListWidget" name="listWidget"/>
+     </item>
      <item row="2" column="1">
       <widget class="QLabel" name="lable_name">
        <property name="text">
@@ -50,27 +56,32 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="name_lineEdit"/>
-     </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="tel_lineEdit"/>
      </item>
-     <item row="11" column="1">
-      <widget class="QListWidget" name="listWidget"/>
-     </item>
-     <item row="6" column="1">
-      <widget class="QPushButton" name="pb_toJSON">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>To JSON</string>
-       </property>
-      </widget>
+     <item row="4" column="1" rowspan="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPushButton" name="pb_toJSON">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>To JSON</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_clear">
+         <property name="text">
+          <string>Clear all</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
