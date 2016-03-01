@@ -9,14 +9,10 @@
 #include <QJsonDocument>
 #include <QVariant>
 
-
 #include <stdio.h>
-
 #include <qjson/parser.h>
 #include <qjson-qt5/qjson_export.h>
 #include <qjson/serializer.h>
-
-#include "json.h"
 
 namespace Ui
 {

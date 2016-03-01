@@ -37,7 +37,6 @@ void MainWindow::QVariantToJson()
     //ui->listWidget->addItem(json);
     qDebug() << json;*/
 
-
     if ((ui->tel_lineEdit->text()!= "")&(ui->name_lineEdit->text()!=""))
     {
 
