@@ -75,6 +75,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="pb_toServer">
+         <property name="text">
+          <string>Send JSON to Server</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="pb_clear">
          <property name="text">
           <string>Clear</string>

@@ -24,8 +24,7 @@ void MainWindow::ToJson()
         map.insert("thelephone", ui->tel_lineEdit->text());
         map.insert("name", ui->name_lineEdit->text());
 
-        QJsonObject object = QJsonObject::fromVariantMap(map);
-        QJsonDocument document;
+        object = QJsonObject::fromVariantMap(map);
         document.setObject(object);
 
         QFile jsonFile("/home/kopylov/tb.json");
@@ -35,16 +34,16 @@ void MainWindow::ToJson()
 
         ui->listWidget->addItem(document.toJson());
 
-        connect_status->setText("Information successfull convert to JSON!");
-        ui->statusBar->addWidget(connect_status);
+        status_bar_label->setText("Information successfull convert to JSON!");
+        ui->statusBar->addWidget(status_bar_label);
 
     }
     else
     {
         ui->listWidget->clear();
         ui->listWidget->addItem("Fill all the fields before convert information to JSON!");
-        connect_status->setText("Failed when convert information to JSON!");
-        ui->statusBar->addWidget(connect_status);
+        status_bar_label->setText("Failed when convert information to JSON!");
+        ui->statusBar->addWidget(status_bar_label);
     }
 }
 
@@ -52,13 +51,13 @@ void MainWindow::ClearAll()
 {
     ui->listWidget->clear();
 
-    connect_status->setText("JSON file cleared!");
-    ui->statusBar->addWidget(connect_status);
+    status_bar_label->setText("JSON file cleared!");
+    ui->statusBar->addWidget(status_bar_label);
 
     QFile file("/home/kopylov/tb.json");
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
-       file.write("");
+        file.write("");
     }
     file.close();
 }
@@ -73,8 +72,8 @@ void MainWindow::connectToHost()
 
 void MainWindow::slotConnected()
 {
-    connect_status->setText("Connection successfull");
-    ui->statusBar->addWidget(connect_status);
+    status_bar_label->setText("Connection successfull");
+    ui->statusBar->addWidget(status_bar_label);
     qDebug() << "Received the connected() signal";
     qDebug() << "Connection successfull";
 }
@@ -88,6 +87,7 @@ void MainWindow::CreatorConnections()
 {
     connect(ui->pb_toJSON, SIGNAL(clicked(bool)), this, SLOT(ToJson()));
     connect(ui->pb_clear, SIGNAL(clicked(bool)), this, SLOT(ClearAll()));
+    connect(ui->pb_toServer, SIGNAL(clicked(bool)), this, SLOT(JSONtoServer()));
 }
 
 void MainWindow::InterfaceSettings()
@@ -95,9 +95,9 @@ void MainWindow::InterfaceSettings()
     setCentralWidget(ui->gridWidget);
     setWindowTitle("Telephone Book");
 
-    connect_status = new QLabel(this);
-    connect_status->setText("Application run");
-    ui->statusBar->addWidget(connect_status);
+    status_bar_label = new QLabel(this);
+    status_bar_label->setText("Application run");
+    ui->statusBar->addWidget(status_bar_label);
 
     ui->tel_lineEdit->setFocus();
     ui->tel_lineEdit->setInputMask("0-000-000-00-00");
@@ -110,25 +110,24 @@ void MainWindow::InterfaceSettings()
 
     ui->listWidget->viewport()->setAttribute( Qt::WA_TransparentForMouseEvents);
 
-    //Don't work!
-    /*QVariantList people;
+}
 
-    QVariantMap bob;
-    bob.insert("Name", "Bob");
-    bob.insert("Phonenumber", 123);
+void MainWindow::JSONtoServer()
+{
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
 
-    QVariantMap alice;
-    alice.insert("Name", "Alice");
-    alice.insert("Phonenumber", 321);
+    out << (quint16)0;
+    //out << document.toJson();
+    QString output = document.toJson();
+    out << output;
+    qDebug() << document.toJson();
 
-    people << bob << alice;
+    out.device()->seek(0);
+    out << (quint16)(block.size() - sizeof(quint16));
 
-    QJson::Serializer serializer;
-    qDebug() << "Before crash";
-    QString l = "1";
-
-    QByteArray json = serializer.serialize(people);
-
-    qDebug() << json;*/
-
+    m_pTcpSocket->write(block);
+    status_bar_label->setText("JSON was sended to server!");
+    ui->statusBar->addWidget(status_bar_label);
 }

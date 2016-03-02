@@ -33,13 +33,15 @@ private slots:
     void slotReadyRead();
     void slotConnected();
     void connectToHost();
-
+    void JSONtoServer();
 
 private:
     Ui::MainWindow *ui;
     void CreatorConnections();
     void InterfaceSettings();
-    QLabel* connect_status;
+    QLabel* status_bar_label;
+    QJsonObject object;
+    QJsonDocument document;
 
     int nPort;
     QTcpSocket* m_pTcpSocket;
