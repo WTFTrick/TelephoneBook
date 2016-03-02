@@ -37,6 +37,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    bool connected_state;
     void CreatorConnections();
     void InterfaceSettings();
     QJsonObject object;

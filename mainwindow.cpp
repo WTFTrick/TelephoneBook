@@ -19,6 +19,7 @@ void MainWindow::ToJson()
 {
     if ((ui->tel_lineEdit->text()!= "----")&(ui->name_lineEdit->text()!=""))
     {
+        qDebug() << connected_state;
         QVariantMap map;
         map.insert("thelephone", ui->tel_lineEdit->text());
         map.insert("name", ui->name_lineEdit->text());
@@ -60,7 +61,6 @@ void MainWindow::ClearAll()
 
 void MainWindow::connectToHost()
 {
-    m_pTcpSocket = new QTcpSocket(this);
     m_pTcpSocket->connectToHost(ui->le_connect->text(), nPort);
     connect(m_pTcpSocket, SIGNAL(connected()), SLOT(slotConnected()));
     connect(m_pTcpSocket, SIGNAL(readyRead()), SLOT(slotReadyRead()));
@@ -71,6 +71,10 @@ void MainWindow::slotConnected()
     ui->statusBar->showMessage("Connection successfull");
     qDebug() << "Received the connected() signal";
     qDebug() << "Connection successfull";
+    if(m_pTcpSocket->state() == QAbstractSocket::ConnectedState)
+    {
+        ui->pb_connect->setDisabled(true);
+    }
 }
 
 void MainWindow::slotReadyRead()
@@ -96,9 +100,11 @@ void MainWindow::InterfaceSettings()
     ui->tel_lineEdit->setInputMask("0-000-000-00-00");
     ui->tel_lineEdit->setText("0-000-000-00-00");
 
+    m_pTcpSocket = new QTcpSocket(this);
+
     ui->le_connect->setValidator( new QIntValidator(0, 255, this) );
-    ui->le_connect->setInputMask("000.000.000.000;_");
-    ui->le_connect->setText("000.000.000.000");
+    ui->le_connect->setInputMask("000.000.000.000");
+    ui->le_connect->setText("127.0.0.1");
 
     ui->pb_toServer->setEnabled(false);
 
@@ -113,6 +119,8 @@ void MainWindow::InterfaceSettings()
 
 void MainWindow::JSONtoServer()
 {
+    if(m_pTcpSocket->state() == QAbstractSocket::ConnectedState)
+    {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
@@ -127,5 +135,9 @@ void MainWindow::JSONtoServer()
 
     m_pTcpSocket->write(block);
     ui->statusBar->showMessage("JSON was sended to server!");
-
+    }
+    else
+    {
+        ui->statusBar->showMessage("Client don't connect to server!");
+    }
 }
