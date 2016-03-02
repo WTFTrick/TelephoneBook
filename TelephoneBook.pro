@@ -13,17 +13,12 @@ QT+= network
 TARGET = TelephoneBook
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         mainwindow.cpp\
-        json.cpp
 
 HEADERS  += mainwindow.h\
-            json.h
 
 FORMS    += mainwindow.ui
-
-LIBS    += -lqjson
 
 CONFIG += mobility
 MOBILITY = 

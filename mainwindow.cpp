@@ -1,13 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+MainWindow::MainWindow(QWidget *parent) : nPort(2323), m_nNextBlockSize(0), QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     InterfaceSettings();
     CreatorConnections();
+    connectToHost();
 }
 
 MainWindow::~MainWindow()
@@ -16,48 +16,10 @@ MainWindow::~MainWindow()
     close();
 }
 
-void MainWindow::QVariantToJson()
+void MainWindow::ToJson()
 {
-    //Don't Work!
-    /*QVariantList people;
-
-    QVariantMap bob;
-    bob.insert("Name", "Bob");
-    bob.insert("Phonenumber", 123);
-
-    QVariantMap alice;
-    alice.insert("Name", "Alice");
-    alice.insert("Phonenumber", 321);
-
-    people << bob << alice;
-
-    QJson::Serializer serializer;
-    bool ok;
-    QByteArray json = serializer.serialize(people, &ok);
-
-    //ui->listWidget->addItem(json);
-    qDebug() << json;*/
-
-    if ((ui->tel_lineEdit->text()!= "")&(ui->name_lineEdit->text()!=""))
+    if ((ui->tel_lineEdit->text()!= "----")&(ui->name_lineEdit->text()!=""))
     {
-
-        /*QtJson::JsonObject contributor;
-    contributor["thelephone"] = ui->tel_lineEdit->text();
-    contributor["name"] = ui->name_lineEdit->text();
-    QByteArray data = QtJson::serialize(contributor);
-    ui->listWidget->clear();
-    ui->listWidget->addItem(data);
-    qDebug() << data;
-
-    QFile file("/home/kopylov/tb.json");
-
-    //QTextStream out(&file);
-    if (file.open(QIODevice::WriteOnly | QIODevice::Truncate))
-    {
-       file.write(data);
-    }
-    file.close();*/
-
         QVariantMap map;
         map.insert("thelephone", ui->tel_lineEdit->text());
         map.insert("name", ui->name_lineEdit->text());
@@ -73,16 +35,26 @@ void MainWindow::QVariantToJson()
 
         ui->listWidget->addItem(document.toJson());
 
+        connect_status->setText("Information successfull convert to JSON!");
+        ui->statusBar->addWidget(connect_status);
+
     }
     else
     {
-        ui->listWidget->addItem("Fill all the fields before translate information to JSON!");
+        ui->listWidget->clear();
+        ui->listWidget->addItem("Fill all the fields before convert information to JSON!");
+        connect_status->setText("Failed when convert information to JSON!");
+        ui->statusBar->addWidget(connect_status);
     }
 }
 
 void MainWindow::ClearAll()
 {
     ui->listWidget->clear();
+
+    connect_status->setText("JSON file cleared!");
+    ui->statusBar->addWidget(connect_status);
+
     QFile file("/home/kopylov/tb.json");
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
@@ -91,9 +63,30 @@ void MainWindow::ClearAll()
     file.close();
 }
 
+void MainWindow::connectToHost()
+{
+    m_pTcpSocket = new QTcpSocket(this);
+    m_pTcpSocket->connectToHost("localhost", nPort);
+    connect(m_pTcpSocket, SIGNAL(connected()), SLOT(slotConnected()));
+    connect(m_pTcpSocket, SIGNAL(readyRead()), SLOT(slotReadyRead()));
+}
+
+void MainWindow::slotConnected()
+{
+    connect_status->setText("Connection successfull");
+    ui->statusBar->addWidget(connect_status);
+    qDebug() << "Received the connected() signal";
+    qDebug() << "Connection successfull";
+}
+
+void MainWindow::slotReadyRead()
+{
+
+}
+
 void MainWindow::CreatorConnections()
 {
-    connect(ui->pb_toJSON, SIGNAL(clicked(bool)), this, SLOT(QVariantToJson()));
+    connect(ui->pb_toJSON, SIGNAL(clicked(bool)), this, SLOT(ToJson()));
     connect(ui->pb_clear, SIGNAL(clicked(bool)), this, SLOT(ClearAll()));
 }
 
@@ -101,6 +94,10 @@ void MainWindow::InterfaceSettings()
 {
     setCentralWidget(ui->gridWidget);
     setWindowTitle("Telephone Book");
+
+    connect_status = new QLabel(this);
+    connect_status->setText("Application run");
+    ui->statusBar->addWidget(connect_status);
 
     ui->tel_lineEdit->setFocus();
     ui->tel_lineEdit->setInputMask("0-000-000-00-00");

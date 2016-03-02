@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>553</width>
-    <height>480</height>
+    <height>513</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -42,7 +42,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Enter your telephone number:</string>
+        <string>Enter telephone number:</string>
        </property>
       </widget>
      </item>
@@ -52,7 +52,7 @@
      <item row="2" column="1">
       <widget class="QLabel" name="lable_name">
        <property name="text">
-        <string>Enter your name:</string>
+        <string>Enter name:</string>
        </property>
       </widget>
      </item>
@@ -77,7 +77,7 @@
        <item>
         <widget class="QPushButton" name="pb_clear">
          <property name="text">
-          <string>Clear all</string>
+          <string>Clear</string>
          </property>
         </widget>
        </item>
@@ -103,6 +103,7 @@
    </widget>
    <addaction name="menuFile"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>

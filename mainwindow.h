@@ -8,11 +8,11 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QVariant>
+#include <QtNetwork>
+#include <QTcpSocket>
+#include <QLabel>
 
 #include <stdio.h>
-#include <qjson/parser.h>
-#include <qjson-qt5/qjson_export.h>
-#include <qjson/serializer.h>
 
 namespace Ui
 {
@@ -28,13 +28,23 @@ public:
     ~MainWindow();
 
 private slots:
-    void QVariantToJson();
+    void ToJson();
     void ClearAll();
+    void slotReadyRead();
+    void slotConnected();
+    void connectToHost();
+
 
 private:
     Ui::MainWindow *ui;
     void CreatorConnections();
     void InterfaceSettings();
+    QLabel* connect_status;
+
+    int nPort;
+    QTcpSocket* m_pTcpSocket;
+    quint32     m_nNextBlockSize;
+
 };
 
 #endif // MAINWINDOW_H
