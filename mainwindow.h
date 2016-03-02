@@ -39,7 +39,6 @@ private:
     Ui::MainWindow *ui;
     void CreatorConnections();
     void InterfaceSettings();
-    QLabel* status_bar_label;
     QJsonObject object;
     QJsonDocument document;
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>553</width>
-    <height>513</height>
+    <height>673</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,12 +26,19 @@
       <x>10</x>
       <y>10</y>
       <width>531</width>
-      <height>461</height>
+      <height>601</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="name_lineEdit"/>
+     <item row="11" column="1">
+      <widget class="QListWidget" name="listWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="label_telephone">
@@ -46,18 +53,24 @@
        </property>
       </widget>
      </item>
-     <item row="11" column="1">
-      <widget class="QListWidget" name="listWidget"/>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="name_lineEdit"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="tel_lineEdit"/>
      </item>
      <item row="2" column="1">
       <widget class="QLabel" name="lable_name">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Enter name:</string>
        </property>
       </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="tel_lineEdit"/>
      </item>
      <item row="4" column="1" rowspan="2">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -89,6 +102,48 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="12" column="1">
+      <widget class="QGroupBox" name="groupBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title">
+        <string>Connection settings:</string>
+       </property>
+       <widget class="QWidget" name="gridLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>20</y>
+          <width>511</width>
+          <height>211</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="le_connect"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QPushButton" name="pb_connect">
+           <property name="text">
+            <string>Connect</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Enter IP-Adress of the server:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </item>
     </layout>
    </widget>

@@ -7,7 +7,6 @@ MainWindow::MainWindow(QWidget *parent) : nPort(2323), m_nNextBlockSize(0), QMai
     ui->setupUi(this);
     InterfaceSettings();
     CreatorConnections();
-    connectToHost();
 }
 
 MainWindow::~MainWindow()
@@ -27,53 +26,49 @@ void MainWindow::ToJson()
         object = QJsonObject::fromVariantMap(map);
         document.setObject(object);
 
-        QFile jsonFile("/home/kopylov/tb.json");
+        /*QFile jsonFile("/home/kopylov/tb.json");
         jsonFile.open(QFile::Append);
         jsonFile.write(document.toJson());
-        jsonFile.close();
+        jsonFile.close();*/
 
         ui->listWidget->addItem(document.toJson());
-
-        status_bar_label->setText("Information successfull convert to JSON!");
-        ui->statusBar->addWidget(status_bar_label);
-
+        ui->statusBar->showMessage("Information successfull convert to JSON!");
+        ui->pb_toServer->setEnabled(true);
     }
     else
     {
         ui->listWidget->clear();
         ui->listWidget->addItem("Fill all the fields before convert information to JSON!");
-        status_bar_label->setText("Failed when convert information to JSON!");
-        ui->statusBar->addWidget(status_bar_label);
+        ui->statusBar->showMessage("Failed when convert information to JSON!");
     }
 }
 
 void MainWindow::ClearAll()
 {
+
     ui->listWidget->clear();
+    ui->pb_toServer->setEnabled(false);
+    ui->statusBar->showMessage("JSON cleared!");
 
-    status_bar_label->setText("JSON file cleared!");
-    ui->statusBar->addWidget(status_bar_label);
-
-    QFile file("/home/kopylov/tb.json");
+    /*QFile file("/home/kopylov/tb.json");
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
         file.write("");
     }
-    file.close();
+    file.close();*/
 }
 
 void MainWindow::connectToHost()
 {
     m_pTcpSocket = new QTcpSocket(this);
-    m_pTcpSocket->connectToHost("localhost", nPort);
+    m_pTcpSocket->connectToHost(ui->le_connect->text(), nPort);
     connect(m_pTcpSocket, SIGNAL(connected()), SLOT(slotConnected()));
     connect(m_pTcpSocket, SIGNAL(readyRead()), SLOT(slotReadyRead()));
 }
 
 void MainWindow::slotConnected()
 {
-    status_bar_label->setText("Connection successfull");
-    ui->statusBar->addWidget(status_bar_label);
+    ui->statusBar->showMessage("Connection successfull");
     qDebug() << "Received the connected() signal";
     qDebug() << "Connection successfull";
 }
@@ -88,6 +83,7 @@ void MainWindow::CreatorConnections()
     connect(ui->pb_toJSON, SIGNAL(clicked(bool)), this, SLOT(ToJson()));
     connect(ui->pb_clear, SIGNAL(clicked(bool)), this, SLOT(ClearAll()));
     connect(ui->pb_toServer, SIGNAL(clicked(bool)), this, SLOT(JSONtoServer()));
+    connect(ui->pb_connect, SIGNAL(clicked(bool)), this, SLOT(connectToHost()));
 }
 
 void MainWindow::InterfaceSettings()
@@ -95,13 +91,16 @@ void MainWindow::InterfaceSettings()
     setCentralWidget(ui->gridWidget);
     setWindowTitle("Telephone Book");
 
-    status_bar_label = new QLabel(this);
-    status_bar_label->setText("Application run");
-    ui->statusBar->addWidget(status_bar_label);
-
+    ui->statusBar->showMessage("Application run");
     ui->tel_lineEdit->setFocus();
     ui->tel_lineEdit->setInputMask("0-000-000-00-00");
     ui->tel_lineEdit->setText("0-000-000-00-00");
+
+    ui->le_connect->setValidator( new QIntValidator(0, 255, this) );
+    ui->le_connect->setInputMask("000.000.000.000;_");
+    ui->le_connect->setText("000.000.000.000");
+
+    ui->pb_toServer->setEnabled(false);
 
     QRegExp rx("[A-z]+");
     QRegExpValidator  *valid = new QRegExpValidator(rx,this);
@@ -119,7 +118,6 @@ void MainWindow::JSONtoServer()
     out.setVersion(QDataStream::Qt_5_4);
 
     out << (quint16)0;
-    //out << document.toJson();
     QString output = document.toJson();
     out << output;
     qDebug() << document.toJson();
@@ -128,6 +126,6 @@ void MainWindow::JSONtoServer()
     out << (quint16)(block.size() - sizeof(quint16));
 
     m_pTcpSocket->write(block);
-    status_bar_label->setText("JSON was sended to server!");
-    ui->statusBar->addWidget(status_bar_label);
+    ui->statusBar->showMessage("JSON was sended to server!");
+
 }
