@@ -20,12 +20,15 @@ void MainWindow::ToJson()
     if ((ui->tel_lineEdit->text()!= "----")&(ui->name_lineEdit->text()!=""))
     {
         qDebug() << connected_state;
+        id++;
         QVariantMap map;
         map.insert("thelephone", ui->tel_lineEdit->text());
         map.insert("name", ui->name_lineEdit->text());
-
         object = QJsonObject::fromVariantMap(map);
-        document.setObject(object);
+
+        object2["Information"] = object;
+        object2["Id"] = id;
+        document.setObject(object2);
 
         /*QFile jsonFile("/home/kopylov/tb.json");
         jsonFile.open(QFile::Append);
@@ -35,6 +38,8 @@ void MainWindow::ToJson()
         ui->listWidget->addItem(document.toJson());
         ui->statusBar->showMessage("Information successfull convert to JSON!");
         ui->pb_toServer->setEnabled(true);
+        QString MyString = QString("Id:%1").arg(id+1);
+        ui->id_label->setText(MyString);
     }
     else
     {
@@ -50,6 +55,9 @@ void MainWindow::ClearAll()
     ui->listWidget->clear();
     ui->pb_toServer->setEnabled(false);
     ui->statusBar->showMessage("JSON cleared!");
+    id = 0;
+    QString MyString = QString("Id:%1").arg(id+1);
+    ui->id_label->setText(MyString);
 
     /*QFile file("/home/kopylov/tb.json");
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate))
@@ -96,7 +104,6 @@ void MainWindow::InterfaceSettings()
     setWindowTitle("Telephone Book");
 
     ui->statusBar->showMessage("Application run");
-    ui->tel_lineEdit->setFocus();
     ui->tel_lineEdit->setInputMask("0-000-000-00-00");
     ui->tel_lineEdit->setText("0-000-000-00-00");
 
@@ -114,6 +121,10 @@ void MainWindow::InterfaceSettings()
     ui->name_lineEdit->setText("Name");
 
     ui->listWidget->viewport()->setAttribute( Qt::WA_TransparentForMouseEvents);
+
+    id = 0;
+    QString MyString = QString("Id:%1").arg(id+1);
+    ui->id_label->setText(MyString);
 
 }
 
