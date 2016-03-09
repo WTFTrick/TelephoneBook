@@ -19,15 +19,14 @@ void MainWindow::ToJson()
 {
     if ((ui->tel_lineEdit->text()!= "----")&(ui->name_lineEdit->text()!=""))
     {
-        qDebug() << connected_state;
-        id++;
+        //qDebug() << connected_state;
         QVariantMap map;
         map.insert("thelephone", ui->tel_lineEdit->text());
         map.insert("name", ui->name_lineEdit->text());
         object = QJsonObject::fromVariantMap(map);
 
         object2["Information"] = object;
-        object2["Id"] = id;
+        object2["Type"] = "Telephone Book";
         document.setObject(object2);
 
         /*QFile jsonFile("/home/kopylov/tb.json");
@@ -37,16 +36,24 @@ void MainWindow::ToJson()
 
         ui->listWidget->addItem(document.toJson());
         ui->statusBar->showMessage("Information successfull convert to JSON!");
-        ui->pb_toServer->setEnabled(true);
-        QString MyString = QString("Id:%1").arg(id+1);
-        ui->id_label->setText(MyString);
     }
     else
     {
         ui->listWidget->clear();
-        ui->listWidget->addItem("Fill all the fields before convert information to JSON!");
-        ui->statusBar->showMessage("Failed when convert information to JSON!");
+        ui->listWidget->addItem("Error: Fill all the fields before convert information to JSON!");
+        ui->statusBar->showMessage("Error: Failed when convert information to JSON!");
     }
+
+    if (ui->listWidget->count() == 0)
+    {
+        ui->pb_toServer->setDisabled(true);
+    }
+    if(m_pTcpSocket->state() == QAbstractSocket::ConnectedState)
+    {
+        ui->pb_toServer->setEnabled(true);
+    }
+    ui->pb_toJSON->setEnabled(false);
+
 }
 
 void MainWindow::ClearAll()
@@ -55,9 +62,7 @@ void MainWindow::ClearAll()
     ui->listWidget->clear();
     ui->pb_toServer->setEnabled(false);
     ui->statusBar->showMessage("JSON cleared!");
-    id = 0;
-    QString MyString = QString("Id:%1").arg(id+1);
-    ui->id_label->setText(MyString);
+    ui->pb_toJSON->setEnabled(true);
 
     /*QFile file("/home/kopylov/tb.json");
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate))
@@ -69,9 +74,16 @@ void MainWindow::ClearAll()
 
 void MainWindow::connectToHost()
 {
+    if (ui->le_connect->text() != "...")
+    {
     m_pTcpSocket->connectToHost(ui->le_connect->text(), nPort);
     connect(m_pTcpSocket, SIGNAL(connected()), SLOT(slotConnected()));
     connect(m_pTcpSocket, SIGNAL(readyRead()), SLOT(slotReadyRead()));
+    }
+    else
+    {
+        ui->statusBar->showMessage("Enter Server IP Adress!");
+    }
 }
 
 void MainWindow::slotConnected()
@@ -82,6 +94,15 @@ void MainWindow::slotConnected()
     if(m_pTcpSocket->state() == QAbstractSocket::ConnectedState)
     {
         ui->pb_connect->setDisabled(true);
+        ui->pb_toServer->setEnabled(true);
+    }
+    if (ui->listWidget->count() == 0)
+    {
+        ui->pb_toServer->setDisabled(true);
+    }
+    if (m_pTcpSocket->state() != QAbstractSocket::ConnectedState)
+    {
+        ui->statusBar->showMessage("Error: Client can not connect to server!");
     }
 }
 
@@ -121,11 +142,6 @@ void MainWindow::InterfaceSettings()
     ui->name_lineEdit->setText("Name");
 
     ui->listWidget->viewport()->setAttribute( Qt::WA_TransparentForMouseEvents);
-
-    id = 0;
-    QString MyString = QString("Id:%1").arg(id+1);
-    ui->id_label->setText(MyString);
-
 }
 
 void MainWindow::JSONtoServer()
@@ -149,6 +165,7 @@ void MainWindow::JSONtoServer()
     }
     else
     {
-        ui->statusBar->showMessage("Client don't connect to server!");
+        ui->statusBar->showMessage("Error: Client don't connect to server!");
     }
+    ui->pb_toServer->setEnabled(false);
 }

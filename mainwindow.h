@@ -42,7 +42,6 @@ private:
     void InterfaceSettings();
     QJsonObject object;
     QJsonObject object2;
-    quint8 id;
     QJsonDocument document;
 
     int nPort;
